@@ -268,9 +268,9 @@ h1 {
   max-width: 100%;
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(3.2rem, 13vw, 5.6rem);
+  font-size: clamp(1.85rem, min(13vw, 8vh), 5.6rem);
   margin: 18px 0 12px;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .question-prompt {
   margin: 0 0 30px;
@@ -468,7 +468,7 @@ h1 {
     padding-bottom: 24px;
   }
   .start-screen h1 {
-    font-size: clamp(2.5rem, min(10vw, 6vh), 5rem);
+    font-size: clamp(2.25rem, min(10vw, 6vh), 5rem);
   }
   .start-screen .eyebrow {
     margin-top: clamp(34px, 6vh, 58px);
