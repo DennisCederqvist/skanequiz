@@ -1,0 +1,199 @@
+import "./style.css";
+
+const WORDS = [
+  ["Tummaträ", "tumstock"],
+  ["Slabbeposse", "soppåse"],
+  ["Knudemos", "potatismos"],
+  ["Karkluda", "disktrasa"],
+  ["Blannevann", "groggvirke"],
+  ["Rabbemos", "rotmos"],
+  ["Smöramad", "smörgås"],
+  ["Bullerfjös", "stor och klumpig person"],
+  ["Vrövla", "prata strunt"],
+  ["Galenratta", "kärring"],
+  ["Pära", "potatis"],
+  ["Lua/Lubba", "springa"],
+  ["Hubba daj", "flytta dig"],
+  ["Traderöv", "tråkmåns"],
+  ["Glytt", "litet barn"],
+  ["Pågasnöre", "snorvalp"],
+  ["Flabb", "mun"],
+  ["Ramsvenne", "icke skåning"],
+  ["Dabba", "klanta sig"],
+  ["Sjåpa sig", "göra sig till"],
+  ["Fjant", "larvig person"],
+  ["Ålahue", "idiot/dumskalle"],
+  ["Grobakont", "dike"],
+  ["Fubbick", "idiot"],
+  ["Fesmase", "storväxt"],
+  ["Rullebör", "skottkärra"],
+  ["Hialös", "stirrig/orolig i kroppen"],
+  ["Jidder", "tjafs"],
+  ["Klydderöv", "klumpig/klantig"],
+  ["Fesjunken", "ljummen"],
+  ["Dofsing", "vacker kvinna"],
+  ["Alika", "stupfull"],
+].map(([word, meaning]) => ({ word, meaning }));
+
+const TOTAL_QUESTIONS = 16;
+const STORAGE_KEY = "skanequiz-results";
+const app = document.querySelector("#app");
+let game = null;
+
+const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
+const results = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const saveResults = (items) =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+const formatTime = (milliseconds) =>
+  `${(milliseconds / 1000).toFixed(1).replace(".", ",")} s`;
+
+function renderStart() {
+  app.innerHTML = `
+    <section class="shell start-screen">
+      <div class="brand-mark">Skåne<span>quiz</span></div>
+      <p class="eyebrow">Ett test i skånsk tungomål</p>
+      <h1>Hur skånsk<br />är du egentligen?</h1>
+      <p class="intro">16 ord. 4 svar. Ett försök.<br />Visa vad du går för.</p>
+      <form id="start-form" class="start-form">
+        <label for="player-name">Ditt för- och efternamn</label>
+        <input id="player-name" name="name" autocomplete="name" placeholder="Till exempel Anna Andersson" required minlength="2" />
+        <button class="primary-button" type="submit">Starta quizet <span aria-hidden="true">↗</span></button>
+      </form>
+      <button class="text-button" id="leaderboard-button" type="button">Se topplistan <span aria-hidden="true">↓</span></button>
+      <p class="note">Resultat sparas lokalt i den här webbläsaren tills Supabase kopplas in.</p>
+    </section>
+  `;
+  document.querySelector("#start-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    startGame(new FormData(event.currentTarget).get("name").trim());
+  });
+  document
+    .querySelector("#leaderboard-button")
+    .addEventListener("click", renderLeaderboard);
+}
+
+function startGame(name) {
+  game = {
+    name,
+    questions: shuffle(WORDS).slice(0, TOTAL_QUESTIONS),
+    current: 0,
+    score: 0,
+    startedAt: performance.now(),
+    locked: false,
+  };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const question = game.questions[game.current];
+  const distractors = shuffle(
+    WORDS.filter((item) => item.meaning !== question.meaning),
+  )
+    .slice(0, 3)
+    .map((item) => item.meaning);
+  const choices = shuffle([question.meaning, ...distractors]);
+  game.locked = false;
+  app.innerHTML = `
+    <section class="shell quiz-screen">
+      <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">${game.current + 1} <span>/ ${TOTAL_QUESTIONS}</span></div></header>
+      <div class="progress-track"><div style="width: ${((game.current + 1) / TOTAL_QUESTIONS) * 100}%"></div></div>
+      <div class="question-meta"><span>Vad betyder</span><span class="timer" id="timer">00,0</span></div>
+      <h1 class="word">${question.word}</h1>
+      <p class="question-prompt">Välj det rätta svaret.</p>
+      <div class="answers" role="group" aria-label="Svarsalternativ">
+        ${choices.map((choice, index) => `<button class="answer-button" data-choice="${choice}" type="button"><span>${String.fromCharCode(65 + index)}</span>${choice}</button>`).join("")}
+      </div>
+      <p class="locked-message" id="locked-message">Svaret låses direkt när du väljer.</p>
+    </section>
+  `;
+  const timer = document.querySelector("#timer");
+  const timerStarted = performance.now();
+  game.timer = window.setInterval(() => {
+    timer.textContent = ((performance.now() - timerStarted) / 1000)
+      .toFixed(1)
+      .replace(".", ",");
+  }, 100);
+  document
+    .querySelectorAll(".answer-button")
+    .forEach((button) =>
+      button.addEventListener("click", () => chooseAnswer(button, question)),
+    );
+}
+
+function chooseAnswer(button, question) {
+  if (game.locked) return;
+  game.locked = true;
+  window.clearInterval(game.timer);
+  const correct = button.dataset.choice === question.meaning;
+  if (correct) game.score += 1;
+  button.classList.add(correct ? "correct" : "wrong");
+  if (!correct)
+    document
+      .querySelector(`[data-choice="${CSS.escape(question.meaning)}"]`)
+      ?.classList.add("correct");
+  document.querySelectorAll(".answer-button").forEach((item) => {
+    item.disabled = true;
+  });
+  const message = document.querySelector("#locked-message");
+  message.textContent = correct
+    ? "Rätt! Nästa fråga kommer strax."
+    : `Rätt svar: ${question.meaning}`;
+  message.classList.add(correct ? "success" : "error");
+  window.setTimeout(() => {
+    game.current += 1;
+    if (game.current === TOTAL_QUESTIONS) renderResult();
+    else renderQuestion();
+  }, 850);
+}
+
+function renderResult() {
+  const elapsed = performance.now() - game.startedAt;
+  const entry = {
+    name: game.name,
+    score: game.score,
+    time: elapsed,
+    createdAt: Date.now(),
+  };
+  const allResults = [
+    ...results().filter(
+      (item) => item.name.toLowerCase() !== entry.name.toLowerCase(),
+    ),
+    entry,
+  ].sort((a, b) => b.score - a.score || a.time - b.time);
+  saveResults(allResults);
+  app.innerHTML = `
+    <section class="shell result-screen">
+      <div class="brand-mark small">Skåne<span>quiz</span></div>
+      <p class="eyebrow">Quizet är klart</p>
+      <h1>Snyggt spelat,<br />${game.name.split(" ")[0]}.</h1>
+      <div class="score-block"><strong>${game.score}<span>/${TOTAL_QUESTIONS}</span></strong><small>rätt svar</small></div>
+      <div class="time-row"><span>Din tid</span><strong>${formatTime(elapsed)}</strong></div>
+      <div class="result-actions"><button class="primary-button" id="play-again" type="button">Spela igen <span aria-hidden="true">↗</span></button><button class="secondary-button" id="see-board" type="button">Se topplistan</button></div>
+    </section>
+  `;
+  document
+    .querySelector("#play-again")
+    .addEventListener("click", () => startGame(game.name));
+  document
+    .querySelector("#see-board")
+    .addEventListener("click", renderLeaderboard);
+}
+
+function renderLeaderboard() {
+  const board = results();
+  app.innerHTML = `
+    <section class="shell leaderboard-screen">
+      <button class="back-button" id="back" type="button">← <span>Till start</span></button>
+      <div class="brand-mark small">Skåne<span>quiz</span></div>
+      <p class="eyebrow">Hittills på festen</p><h1>Topplistan</h1>
+      ${board.length ? `<div class="leaderboard">${board.map((item, index) => `<div class="leader-row ${index === 0 ? "first" : ""}"><span class="rank">${String(index + 1).padStart(2, "0")}</span><strong>${item.name}</strong><span class="points">${item.score}/${TOTAL_QUESTIONS}</span><span class="result-time">${formatTime(item.time)}</span></div>`).join("")}</div>` : '<p class="empty-board">Ingen har spelat än. Bli först på listan.</p>'}
+      <button class="primary-button" id="start-from-board" type="button">Starta quizet <span aria-hidden="true">↗</span></button>
+    </section>
+  `;
+  document.querySelector("#back").addEventListener("click", renderStart);
+  document
+    .querySelector("#start-from-board")
+    .addEventListener("click", renderStart);
+}
+
+renderStart();
