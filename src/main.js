@@ -65,7 +65,7 @@ function renderStart() {
         <form id="start-form" class="start-form">
           <label for="player-name">Ditt för- och efternamn</label>
           <input id="player-name" name="name" autocomplete="name" placeholder="Till exempel Anna Andersson" required minlength="2" />
-          <button class="primary-button" type="submit">Starta quizet <span aria-hidden="true">↗</span></button>
+          <button class="primary-button" type="submit" disabled>Starta quizet <span aria-hidden="true">↗</span></button>
         </form>
         <button class="text-button" id="leaderboard-button" type="button">Se topplistan <span aria-hidden="true">↓</span></button>
         <p class="note">${supabaseConfigured ? "Resultat delas på den gemensamma topplistan." : "Resultat sparas lokalt tills Supabase är anslutet."}</p>
@@ -75,6 +75,10 @@ function renderStart() {
   document.querySelector("#start-form").addEventListener("submit", (event) => {
     event.preventDefault();
     startGame(new FormData(event.currentTarget).get("name").trim());
+  });
+  document.querySelector("#player-name").addEventListener("input", (event) => {
+    event.currentTarget.form.querySelector(".primary-button").disabled =
+      event.currentTarget.value.trim().length === 0;
   });
   document
     .querySelector("#leaderboard-button")
