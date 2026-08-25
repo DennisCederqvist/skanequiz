@@ -261,8 +261,11 @@ h1 {
   background: var(--sun);
   box-shadow: inset 0 0 0 1px rgba(230, 108, 78, 0.65);
 }
-.progress-segment.completed {
-  background: var(--coral);
+.progress-segment.correct {
+  background: #5a9c73;
+}
+.progress-segment.wrong {
+  background: #d15b50;
 }
 .question-meta {
   display: flex;

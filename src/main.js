@@ -91,6 +91,7 @@ function startGame(name) {
     questions: shuffle(WORDS).slice(0, TOTAL_QUESTIONS),
     current: 0,
     score: 0,
+    answers: [],
     startedAt: performance.now(),
     locked: false,
   };
@@ -111,8 +112,8 @@ function renderQuestion() {
       <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
         <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">Fråga ${String(game.current + 1).padStart(2, "0")} <span>/ ${TOTAL_QUESTIONS}</span></div><strong class="score-label">${game.score} rätt hittills</strong></header>
-        <div class="progress-track" aria-label="Fråga ${game.current + 1} av ${TOTAL_QUESTIONS}">${Array.from({ length: TOTAL_QUESTIONS }, (_, index) => `<span class="progress-segment ${index < game.current ? "completed" : index === game.current ? "active" : ""}"></span>`).join("")}</div>
-        <div class="question-meta"><span>Vad betyder ordet?</span><span class="timer" id="timer">00,0</span></div>
+        <div class="progress-track" aria-label="Fråga ${game.current + 1} av ${TOTAL_QUESTIONS}">${Array.from({ length: TOTAL_QUESTIONS }, (_, index) => `<span class="progress-segment ${game.answers[index] === true ? "correct" : game.answers[index] === false ? "wrong" : index === game.current ? "active" : ""}"></span>`).join("")}</div>
+        <div class="question-meta"><span>Vad betyder ordet?</span></div>
         <h1 class="word">${question.word}</h1>
         <p class="question-prompt">Välj det rätta svaret.</p>
         <div class="answers" role="group" aria-label="Svarsalternativ">
@@ -122,12 +123,8 @@ function renderQuestion() {
       </div>
     </section>
   `;
-  const timer = document.querySelector("#timer");
-  const timerStarted = performance.now();
   game.timer = window.setInterval(() => {
-    timer.textContent = ((performance.now() - timerStarted) / 1000)
-      .toFixed(1)
-      .replace(".", ",");
+    game.elapsed = performance.now() - game.startedAt;
   }, 100);
   document
     .querySelectorAll(".answer-button")
@@ -141,6 +138,7 @@ function chooseAnswer(button, question) {
   game.locked = true;
   window.clearInterval(game.timer);
   const correct = button.dataset.choice === question.meaning;
+  game.answers[game.current] = correct;
   if (correct) game.score += 1;
   button.classList.add(correct ? "correct" : "wrong");
   if (!correct)
