@@ -459,7 +459,11 @@ h1 {
 @media (max-width: 699px) {
   .shell {
     min-height: 100svh;
+    padding-top: 82px;
     padding-bottom: 24px;
+  }
+  .page-kicker {
+    top: 42px;
   }
   .start-screen h1 {
     font-size: clamp(2.5rem, min(10vw, 6vh), 5rem);
