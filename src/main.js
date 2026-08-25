@@ -56,17 +56,20 @@ async function getResults() {
 function renderStart() {
   app.innerHTML = `
     <section class="shell start-screen">
-      <div class="brand-mark">Skåne<span>quiz</span></div>
-      <p class="eyebrow">Ett test i skånsk tungomål</p>
-      <h1>Hur skånsk<br />är du egentligen?</h1>
-      <p class="intro">16 ord. 4 svar. Ett försök.<br />Visa vad du går för.</p>
-      <form id="start-form" class="start-form">
-        <label for="player-name">Ditt för- och efternamn</label>
-        <input id="player-name" name="name" autocomplete="name" placeholder="Till exempel Anna Andersson" required minlength="2" />
-        <button class="primary-button" type="submit">Starta quizet <span aria-hidden="true">↗</span></button>
-      </form>
-      <button class="text-button" id="leaderboard-button" type="button">Se topplistan <span aria-hidden="true">↓</span></button>
-      <p class="note">${supabaseConfigured ? "Resultat delas på den gemensamma topplistan." : "Resultat sparas lokalt tills Supabase är anslutet."}</p>
+      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
+      <div class="panel">
+        <div class="brand-mark">Skåne<span>quiz</span></div>
+        <p class="eyebrow">Ett test i skånsk tungomål</p>
+        <h1>Hur skånsk<br />är du egentligen?</h1>
+        <p class="intro">16 ord. 4 svar. Ett försök.<br />Visa vad du går för.</p>
+        <form id="start-form" class="start-form">
+          <label for="player-name">Ditt för- och efternamn</label>
+          <input id="player-name" name="name" autocomplete="name" placeholder="Till exempel Anna Andersson" required minlength="2" />
+          <button class="primary-button" type="submit">Starta quizet <span aria-hidden="true">↗</span></button>
+        </form>
+        <button class="text-button" id="leaderboard-button" type="button">Se topplistan <span aria-hidden="true">↓</span></button>
+        <p class="note">${supabaseConfigured ? "Resultat delas på den gemensamma topplistan." : "Resultat sparas lokalt tills Supabase är anslutet."}</p>
+      </div>
     </section>
   `;
   document.querySelector("#start-form").addEventListener("submit", (event) => {
@@ -101,15 +104,18 @@ function renderQuestion() {
   game.locked = false;
   app.innerHTML = `
     <section class="shell quiz-screen">
-      <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">${game.current + 1} <span>/ ${TOTAL_QUESTIONS}</span></div></header>
-      <div class="progress-track"><div style="width: ${((game.current + 1) / TOTAL_QUESTIONS) * 100}%"></div></div>
-      <div class="question-meta"><span>Vad betyder</span><span class="timer" id="timer">00,0</span></div>
-      <h1 class="word">${question.word}</h1>
-      <p class="question-prompt">Välj det rätta svaret.</p>
-      <div class="answers" role="group" aria-label="Svarsalternativ">
-        ${choices.map((choice, index) => `<button class="answer-button" data-choice="${choice}" type="button"><span>${String.fromCharCode(65 + index)}</span>${choice}</button>`).join("")}
+      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
+      <div class="panel">
+        <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">${game.current + 1} <span>/ ${TOTAL_QUESTIONS}</span></div></header>
+        <div class="progress-track"><div style="width: ${((game.current + 1) / TOTAL_QUESTIONS) * 100}%"></div></div>
+        <div class="question-meta"><span>Vad betyder</span><span class="timer" id="timer">00,0</span></div>
+        <h1 class="word">${question.word}</h1>
+        <p class="question-prompt">Välj det rätta svaret.</p>
+        <div class="answers" role="group" aria-label="Svarsalternativ">
+          ${choices.map((choice, index) => `<button class="answer-button" data-choice="${choice}" type="button"><span>${String.fromCharCode(65 + index)}</span>${choice}</button>`).join("")}
+        </div>
+        <p class="locked-message" id="locked-message">Svaret låses direkt när du väljer.</p>
       </div>
-      <p class="locked-message" id="locked-message">Svaret låses direkt när du väljer.</p>
     </section>
   `;
   const timer = document.querySelector("#timer");
@@ -174,12 +180,15 @@ async function renderResult() {
   }
   app.innerHTML = `
     <section class="shell result-screen">
-      <div class="brand-mark small">Skåne<span>quiz</span></div>
-      <p class="eyebrow">Quizet är klart</p>
-      <h1>Snyggt spelat,<br />${game.name.split(" ")[0]}.</h1>
-      <div class="score-block"><strong>${game.score}<span>/${TOTAL_QUESTIONS}</span></strong><small>rätt svar</small></div>
-      <div class="time-row"><span>Din tid</span><strong>${formatTime(elapsed)}</strong></div>
-      <div class="result-actions"><button class="primary-button" id="play-again" type="button">Spela igen <span aria-hidden="true">↗</span></button><button class="secondary-button" id="see-board" type="button">Se topplistan</button></div>
+      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
+      <div class="panel">
+        <div class="brand-mark small">Skåne<span>quiz</span></div>
+        <p class="eyebrow">Quizet är klart</p>
+        <h1>Snyggt spelat,<br />${game.name.split(" ")[0]}.</h1>
+        <div class="score-block"><strong>${game.score}<span>/${TOTAL_QUESTIONS}</span></strong><small>rätt svar</small></div>
+        <div class="time-row"><span>Din tid</span><strong>${formatTime(elapsed)}</strong></div>
+        <div class="result-actions"><button class="primary-button" id="play-again" type="button">Spela igen <span aria-hidden="true">↗</span></button><button class="secondary-button" id="see-board" type="button">Se topplistan</button></div>
+      </div>
     </section>
   `;
   document
@@ -203,11 +212,14 @@ async function renderLeaderboard() {
   }
   app.innerHTML = `
     <section class="shell leaderboard-screen">
-      <button class="back-button" id="back" type="button">← <span>Till start</span></button>
-      <div class="brand-mark small">Skåne<span>quiz</span></div>
-      <p class="eyebrow">Hittills på festen</p><h1>Topplistan</h1>
-      ${loadError ? `<p class="empty-board error">${loadError}</p>` : board.length ? `<div class="leaderboard">${board.map((item, index) => `<div class="leader-row ${index === 0 ? "first" : ""}"><span class="rank">${String(index + 1).padStart(2, "0")}</span><strong>${item.name}</strong><span class="points">${item.score}/${TOTAL_QUESTIONS}</span><span class="result-time">${formatTime(item.time)}</span></div>`).join("")}</div>` : '<p class="empty-board">Ingen har spelat än. Bli först på listan.</p>'}
-      <button class="primary-button" id="start-from-board" type="button">Starta quizet <span aria-hidden="true">↗</span></button>
+      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
+      <div class="panel">
+        <button class="back-button" id="back" type="button">← <span>Till start</span></button>
+        <div class="brand-mark small">Skåne<span>quiz</span></div>
+        <p class="eyebrow">Hittills på festen</p><h1>Topplistan</h1>
+        ${loadError ? `<p class="empty-board error">${loadError}</p>` : board.length ? `<div class="leaderboard">${board.map((item, index) => `<div class="leader-row ${index === 0 ? "first" : ""}"><span class="rank">${String(index + 1).padStart(2, "0")}</span><strong>${item.name}</strong><span class="points">${item.score}/${TOTAL_QUESTIONS}</span><span class="result-time">${formatTime(item.time)}</span></div>`).join("")}</div>` : '<p class="empty-board">Ingen har spelat än. Bli först på listan.</p>'}
+        <button class="primary-button" id="start-from-board" type="button">Starta quizet <span aria-hidden="true">↗</span></button>
+      </div>
     </section>
   `;
   document.querySelector("#back").addEventListener("click", renderStart);
