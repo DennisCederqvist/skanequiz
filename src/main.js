@@ -1,4 +1,5 @@
 import "./style.css";
+import { fetchResults, insertResult, supabaseConfigured } from "./supabase.js";
 
 const WORDS = [
   ["Tummaträ", "tumstock"],
@@ -47,6 +48,17 @@ const saveResults = (items) =>
 const formatTime = (milliseconds) =>
   `${(milliseconds / 1000).toFixed(1).replace(".", ",")} s`;
 
+async function getResults() {
+  if (supabaseConfigured) {
+    try {
+      return await fetchResults();
+    } catch (error) {
+      console.error("Could not load Supabase results", error);
+    }
+  }
+  return results();
+}
+
 function renderStart() {
   app.innerHTML = `
     <section class="shell start-screen">
@@ -60,7 +72,7 @@ function renderStart() {
         <button class="primary-button" type="submit">Starta quizet <span aria-hidden="true">↗</span></button>
       </form>
       <button class="text-button" id="leaderboard-button" type="button">Se topplistan <span aria-hidden="true">↓</span></button>
-      <p class="note">Resultat sparas lokalt i den här webbläsaren tills Supabase kopplas in.</p>
+      <p class="note">${supabaseConfigured ? "Resultat delas på den gemensamma topplistan." : "Resultat sparas lokalt tills Supabase är anslutet."}</p>
     </section>
   `;
   document.querySelector("#start-form").addEventListener("submit", (event) => {
@@ -146,7 +158,7 @@ function chooseAnswer(button, question) {
   }, 850);
 }
 
-function renderResult() {
+async function renderResult() {
   const elapsed = performance.now() - game.startedAt;
   const entry = {
     name: game.name,
@@ -161,6 +173,11 @@ function renderResult() {
     entry,
   ].sort((a, b) => b.score - a.score || a.time - b.time);
   saveResults(allResults);
+  try {
+    await insertResult(entry);
+  } catch (error) {
+    console.error("Could not save Supabase result", error);
+  }
   app.innerHTML = `
     <section class="shell result-screen">
       <div class="brand-mark small">Skåne<span>quiz</span></div>
@@ -179,8 +196,8 @@ function renderResult() {
     .addEventListener("click", renderLeaderboard);
 }
 
-function renderLeaderboard() {
-  const board = results();
+async function renderLeaderboard() {
+  const board = await getResults();
   app.innerHTML = `
     <section class="shell leaderboard-screen">
       <button class="back-button" id="back" type="button">← <span>Till start</span></button>
