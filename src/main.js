@@ -198,7 +198,8 @@ async function renderLeaderboard() {
   } catch (error) {
     console.error("Could not load Supabase results", error);
     board = [];
-    loadError = "Topplistan kunde inte hämtas från Supabase. Kontrollera att supabase/schema.sql är körd i SQL Editor.";
+    loadError =
+      "Topplistan kunde inte hämtas från Supabase. Kontrollera att supabase/schema.sql är körd i SQL Editor.";
   }
   app.innerHTML = `
     <section class="shell leaderboard-screen">

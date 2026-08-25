@@ -361,7 +361,9 @@ h1 {
 }
 .empty-board.error {
   color: #b74c3d;
-  font: 700 0.9rem/1.45 Arial, sans-serif;
+  font:
+    700 0.9rem/1.45 Arial,
+    sans-serif;
 }
 .back-button {
   display: block;
