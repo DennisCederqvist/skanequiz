@@ -57,22 +57,6 @@ button {
   position: relative;
   z-index: 1;
 }
-.page-kicker {
-  position: absolute;
-  top: 68px;
-  left: 0;
-  width: 100%;
-  color: var(--coral);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-align: center;
-  text-transform: uppercase;
-}
-.page-kicker span {
-  margin: 0 10px;
-  color: #a04a43;
-}
 .panel {
   position: relative;
   padding: 40px 44px 48px;
@@ -480,11 +464,8 @@ h1 {
 @media (max-width: 699px) {
   .shell {
     min-height: 100svh;
-    padding-top: 82px;
+    padding-top: 32px;
     padding-bottom: 24px;
-  }
-  .page-kicker {
-    top: 42px;
   }
   .start-screen h1 {
     font-size: clamp(2.5rem, min(10vw, 6vh), 5rem);

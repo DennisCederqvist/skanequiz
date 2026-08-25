@@ -56,7 +56,6 @@ async function getResults() {
 function renderStart() {
   app.innerHTML = `
     <section class="shell start-screen">
-      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
         <div class="brand-mark">Skåne<span>quiz</span></div>
         <p class="eyebrow">Ett test i skånsk tungomål</p>
@@ -109,7 +108,6 @@ function renderQuestion() {
   game.locked = false;
   app.innerHTML = `
     <section class="shell quiz-screen">
-      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
         <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">Fråga ${String(game.current + 1).padStart(2, "0")} <span>/ ${TOTAL_QUESTIONS}</span></div><strong class="score-label">${game.score} rätt hittills</strong></header>
         <div class="progress-track" aria-label="Fråga ${game.current + 1} av ${TOTAL_QUESTIONS}">${Array.from({ length: TOTAL_QUESTIONS }, (_, index) => `<span class="progress-segment ${game.answers[index] === true ? "correct" : game.answers[index] === false ? "wrong" : index === game.current ? "active" : ""}"></span>`).join("")}</div>
@@ -184,7 +182,6 @@ async function renderResult() {
   }
   app.innerHTML = `
     <section class="shell result-screen">
-      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
         <div class="brand-mark small">Skåne<span>quiz</span></div>
         <p class="eyebrow">Quizet är klart</p>
@@ -217,7 +214,6 @@ async function renderLeaderboard() {
   }
   app.innerHTML = `
     <section class="shell leaderboard-screen">
-      <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
         <button class="back-button" id="back" type="button">← <span>Till start</span></button>
         <div class="brand-mark small">Skåne<span>quiz</span></div>
