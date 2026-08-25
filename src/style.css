@@ -359,6 +359,10 @@ h1 {
   margin: 48px 0;
   font-size: 1.3rem;
 }
+.empty-board.error {
+  color: #b74c3d;
+  font: 700 0.9rem/1.45 Arial, sans-serif;
+}
 .back-button {
   display: block;
   margin-bottom: 54px;

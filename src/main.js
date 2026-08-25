@@ -49,14 +49,8 @@ const formatTime = (milliseconds) =>
   `${(milliseconds / 1000).toFixed(1).replace(".", ",")} s`;
 
 async function getResults() {
-  if (supabaseConfigured) {
-    try {
-      return await fetchResults();
-    } catch (error) {
-      console.error("Could not load Supabase results", error);
-    }
-  }
-  return results();
+  if (!supabaseConfigured) return results();
+  return fetchResults();
 }
 
 function renderStart() {
@@ -197,13 +191,21 @@ async function renderResult() {
 }
 
 async function renderLeaderboard() {
-  const board = await getResults();
+  let board;
+  let loadError = "";
+  try {
+    board = await getResults();
+  } catch (error) {
+    console.error("Could not load Supabase results", error);
+    board = [];
+    loadError = "Topplistan kunde inte hämtas från Supabase. Kontrollera att supabase/schema.sql är körd i SQL Editor.";
+  }
   app.innerHTML = `
     <section class="shell leaderboard-screen">
       <button class="back-button" id="back" type="button">← <span>Till start</span></button>
       <div class="brand-mark small">Skåne<span>quiz</span></div>
       <p class="eyebrow">Hittills på festen</p><h1>Topplistan</h1>
-      ${board.length ? `<div class="leaderboard">${board.map((item, index) => `<div class="leader-row ${index === 0 ? "first" : ""}"><span class="rank">${String(index + 1).padStart(2, "0")}</span><strong>${item.name}</strong><span class="points">${item.score}/${TOTAL_QUESTIONS}</span><span class="result-time">${formatTime(item.time)}</span></div>`).join("")}</div>` : '<p class="empty-board">Ingen har spelat än. Bli först på listan.</p>'}
+      ${loadError ? `<p class="empty-board error">${loadError}</p>` : board.length ? `<div class="leaderboard">${board.map((item, index) => `<div class="leader-row ${index === 0 ? "first" : ""}"><span class="rank">${String(index + 1).padStart(2, "0")}</span><strong>${item.name}</strong><span class="points">${item.score}/${TOTAL_QUESTIONS}</span><span class="result-time">${formatTime(item.time)}</span></div>`).join("")}</div>` : '<p class="empty-board">Ingen har spelat än. Bli först på listan.</p>'}
       <button class="primary-button" id="start-from-board" type="button">Starta quizet <span aria-hidden="true">↗</span></button>
     </section>
   `;
