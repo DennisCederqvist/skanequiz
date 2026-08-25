@@ -175,10 +175,12 @@ async function renderResult() {
     entry,
   ].sort((a, b) => b.score - a.score || a.time - b.time);
   saveResults(allResults);
+  let saveError = "";
   try {
     await insertResult(entry);
   } catch (error) {
     console.error("Could not save Supabase result", error);
+    saveError = "Resultatet kunde inte sparas på den gemensamma topplistan.";
   }
   app.innerHTML = `
     <section class="shell result-screen">
@@ -189,6 +191,7 @@ async function renderResult() {
         <h1>Snyggt spelat,<br />${game.name.split(" ")[0]}.</h1>
         <div class="score-block"><strong>${game.score}<span>/${TOTAL_QUESTIONS}</span></strong><small>rätt svar</small></div>
         <div class="time-row"><span>Din tid</span><strong>${formatTime(elapsed)}</strong></div>
+        ${saveError ? `<p class="save-error">${saveError}</p>` : ""}
         <div class="result-actions"><button class="primary-button" id="play-again" type="button">Spela igen <span aria-hidden="true">↗</span></button><button class="secondary-button" id="see-board" type="button">Se topplistan</button></div>
       </div>
     </section>

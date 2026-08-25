@@ -385,6 +385,12 @@ h1 {
     700 0.82rem Arial,
     sans-serif;
 }
+.save-error {
+  margin: 14px 0 0;
+  color: #b74c3d;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
 .result-actions {
   display: grid;
   gap: 10px;
