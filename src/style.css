@@ -228,6 +228,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 .progress-label {
   font:
@@ -237,20 +239,30 @@ h1 {
 .progress-label span {
   opacity: 0.45;
 }
+.score-label {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
 .progress-track {
   display: grid;
-  grid-template-columns: repeat(16, 1fr);
+  grid-template-columns: repeat(16, minmax(0, 1fr));
   gap: 5px;
-  height: 15px;
-  background: transparent;
-  background: rgba(25, 61, 56, 0.12);
+  height: 16px;
   margin: 18px 0 58px;
 }
-.progress-track div {
+.progress-segment {
+  min-width: 0;
   height: 100%;
-  background: linear-gradient(90deg, var(--sun), var(--coral));
-  border-radius: 3px;
-  transition: width 0.3s ease;
+  border-radius: 4px;
+  background: rgba(230, 108, 78, 0.22);
+}
+.progress-segment.active {
+  background: var(--sun);
+  box-shadow: inset 0 0 0 1px rgba(230, 108, 78, 0.65);
+}
+.progress-segment.completed {
+  background: var(--coral);
 }
 .question-meta {
   display: flex;

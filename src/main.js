@@ -110,9 +110,9 @@ function renderQuestion() {
     <section class="shell quiz-screen">
       <div class="page-kicker">25-årsfest <span>·</span> Skåne</div>
       <div class="panel">
-        <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">${game.current + 1} <span>/ ${TOTAL_QUESTIONS}</span></div></header>
-        <div class="progress-track"><div style="width: ${((game.current + 1) / TOTAL_QUESTIONS) * 100}%"></div></div>
-        <div class="question-meta"><span>Vad betyder</span><span class="timer" id="timer">00,0</span></div>
+        <header class="quiz-header"><div class="brand-mark small">Skåne<span>quiz</span></div><div class="progress-label">Fråga ${String(game.current + 1).padStart(2, "0")} <span>/ ${TOTAL_QUESTIONS}</span></div><strong class="score-label">${game.score} rätt hittills</strong></header>
+        <div class="progress-track" aria-label="Fråga ${game.current + 1} av ${TOTAL_QUESTIONS}">${Array.from({ length: TOTAL_QUESTIONS }, (_, index) => `<span class="progress-segment ${index < game.current ? "completed" : index === game.current ? "active" : ""}"></span>`).join("")}</div>
+        <div class="question-meta"><span>Vad betyder ordet?</span><span class="timer" id="timer">00,0</span></div>
         <h1 class="word">${question.word}</h1>
         <p class="question-prompt">Välj det rätta svaret.</p>
         <div class="answers" role="group" aria-label="Svarsalternativ">
