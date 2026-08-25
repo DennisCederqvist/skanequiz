@@ -1,13 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap");
+
 :root {
-  font-family: Georgia, "Times New Roman", serif;
-  color: #193d38;
-  background: #f3efe5;
+  font-family: "DM Sans", sans-serif;
+  color: #173b35;
+  background: #173b35;
   font-synthesis: none;
-  --ink: #193d38;
-  --coral: #ec6d4d;
-  --paper: #f3efe5;
-  --sun: #f6c75d;
-  --line: rgba(25, 61, 56, 0.22);
+  --ink: #173b35;
+  --coral: #e66c4e;
+  --paper: #f4efe2;
+  --sun: #f3c95d;
+  --mint: #b9d9c6;
+  --line: rgba(23, 59, 53, 0.2);
+  --serif: "Fraunces", Georgia, serif;
 }
 * {
   box-sizing: border-box;
@@ -15,7 +19,7 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--paper);
+  background: var(--ink);
 }
 button,
 input {
@@ -28,42 +32,42 @@ button {
   min-height: 100vh;
 }
 .shell {
-  width: min(100%, 560px);
+  width: min(100%, 620px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 34px 24px 42px;
+  padding: 28px 22px 40px;
   position: relative;
   overflow: hidden;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(23, 59, 53, 0.07) 0.7px, transparent 0.7px);
+  background-size: 9px 9px;
 }
 .shell::before {
   content: "";
   position: absolute;
-  width: 310px;
-  height: 310px;
-  border-radius: 50%;
-  background: var(--sun);
-  top: -150px;
-  right: -130px;
-  z-index: -1;
+  inset: 0 0 auto;
+  height: 10px;
+  background: var(--coral);
 }
 .shell::after {
   content: "";
   position: absolute;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: var(--coral);
-  bottom: -70px;
-  left: -90px;
-  z-index: -1;
+  right: -45px;
+  bottom: 30px;
+  width: 110px;
+  height: 18px;
+  background: var(--sun);
+  transform: rotate(-35deg);
+  z-index: 0;
 }
+.shell > * { position: relative; z-index: 1; }
 .brand-mark {
-  font-family: Arial, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
   color: var(--ink);
 }
+.brand-mark::before { content: "✦"; display: inline-block; margin-right: 7px; color: var(--coral); font-size: .8em; }
 .brand-mark span {
   color: var(--coral);
 }
@@ -72,19 +76,20 @@ button {
 }
 .eyebrow {
   margin: 74px 0 18px;
-  font:
-    700 0.73rem/1 Arial,
-    sans-serif;
-  letter-spacing: 0.13em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
   text-transform: uppercase;
   color: var(--coral);
 }
 h1 {
   margin: 0;
-  font-size: clamp(3rem, 13vw, 5.2rem);
-  line-height: 0.91;
-  letter-spacing: -0.04em;
-  font-weight: 700;
+  font-family: var(--serif);
+  font-size: clamp(3.25rem, 14vw, 6rem);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 0.88;
 }
 .intro {
   margin: 26px 0 34px;
@@ -120,10 +125,11 @@ h1 {
   border: 0;
   min-height: 54px;
   padding: 14px 18px;
-  font:
-    700 0.92rem/1 Arial,
-    sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   text-align: left;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 .primary-button {
   margin-top: 12px;
@@ -133,8 +139,11 @@ h1 {
   justify-content: space-between;
   align-items: center;
 }
+.primary-button span { font-size: 1.3rem; line-height: 0; }
 .primary-button:hover {
+  transform: translate(3px, -3px);
   background: var(--ink);
+  box-shadow: -3px 3px 0 var(--sun);
 }
 .text-button,
 .back-button {
@@ -194,6 +203,7 @@ h1 {
   color: var(--coral);
 }
 .word {
+  max-width: 100%;
   font-size: clamp(3.2rem, 15vw, 5.5rem);
   margin: 18px 0 12px;
   overflow-wrap: anywhere;
@@ -215,10 +225,12 @@ h1 {
   min-height: 64px;
   padding: 11px 14px;
   border: 1.5px solid var(--ink);
+  border-radius: 2px;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.28);
   text-align: left;
-  font-size: 1.05rem;
+  font-size: 0.94rem;
+  transition: transform 0.16s ease, background 0.16s ease;
 }
 .answer-button span {
   display: grid;
@@ -227,9 +239,8 @@ h1 {
   height: 30px;
   background: var(--ink);
   color: var(--paper);
-  font:
-    700 0.8rem Arial,
-    sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 .answer-button:hover:not(:disabled) {
   transform: translateX(4px);
@@ -237,7 +248,7 @@ h1 {
 }
 .answer-button.correct {
   border-color: #357b5c;
-  background: #b9dcbf;
+  background: var(--mint);
 }
 .answer-button.wrong {
   border-color: #b74c3d;
@@ -272,7 +283,10 @@ h1 {
   gap: 14px;
 }
 .score-block strong {
+  font-family: var(--serif);
   font-size: 6.5rem;
+  font-weight: 600;
+  letter-spacing: -0.08em;
   line-height: 0.75;
 }
 .score-block strong span {
@@ -334,6 +348,8 @@ h1 {
   color: var(--coral);
 }
 .leader-row strong {
+  font-family: var(--serif);
+  font-weight: 600;
   font-size: 1.15rem;
 }
 .points {
@@ -374,9 +390,18 @@ h1 {
 }
 @media (min-width: 700px) {
   .shell {
-    padding-top: 56px;
+    padding: 48px 54px 56px;
   }
   .eyebrow {
-    margin-top: 110px;
+    margin-top: 120px;
   }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shell > * { animation: rise 0.5s ease both; }
+  .shell > *:nth-child(2) { animation-delay: 0.05s; }
+  .shell > *:nth-child(3) { animation-delay: 0.1s; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
